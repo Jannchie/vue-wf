@@ -1,3 +1,3 @@
-import antfu from '@antfu/eslint-config'
+import jannchie from '@jannchie/eslint-config'
 
-export default antfu()
+export default jannchie()

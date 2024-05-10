@@ -34,7 +34,7 @@ watch(boundings, () => { }) // Magic, to avoid warning
 const wrapperWidth = computed(() => itemWidth.value * rowCount.value + gap.value * (rowCount.value - 1) + paddingX.value * 2)
 
 const wrapperHeight = ref(0)
-function calculateWaterfallLayout(itemsRef: Ref<{ width: Ref<number>; height: Ref<number> }[]>, columnCount: MaybeRef<number>, gap: MaybeRef<number>, paddingX: MaybeRef<number>) {
+function calculateWaterfallLayout(itemsRef: Ref<{ width: Ref<number>, height: Ref<number> }[]>, columnCount: MaybeRef<number>, gap: MaybeRef<number>, paddingX: MaybeRef<number>) {
   wrapperHeight.value = 0
   const items = unref(itemsRef)
   const columnHeights = Array.from<number>({ length: unref(columnCount) }).fill(0) // 初始化列高度数组
@@ -59,11 +59,13 @@ const layoutData = computed(() => {
 })
 
 function getItemStyle(i: number) {
-  if (!isArray(layoutData.value))
+  if (!isArray(layoutData.value)) {
     return {}
+  }
   const current = layoutData.value[i]
-  if (!current)
+  if (!current) {
     return {}
+  }
   return {
     left: `${current.x ?? 0}px`,
     top: `${current.y ?? 0}px`,
@@ -72,32 +74,45 @@ function getItemStyle(i: number) {
 }
 
 const slots = useSlots()
-const allSlots = slots.default?.() ?? []
-const children: any = []
-allSlots.forEach((slot) => {
-  if (isArray(slot.children)) {
-    slot.children.forEach((child) => {
-      children.push(child)
-    })
-  }
-  else {
-    children.push(slot)
-  }
+const allSlots = computed(() => {
+  return slots.default?.() ?? []
+})
+const children = computed(() => {
+  const children: any = []
+  allSlots.value.forEach((slot) => {
+    if (isArray(slot.children)) {
+      slot.children.forEach((child) => {
+        children.push(child)
+      })
+    }
+    else {
+      children.push(slot)
+    }
+  })
+  return children
 })
 </script>
 
 <template>
   <div
-    ref="wrapper" :style="{
+    ref="wrapper"
+    :style="{
       position: 'relative',
       overflowX: 'clip',
       width: `${wrapperWidth}px`,
       height: `${wrapperHeight}px`,
     }"
   >
-    <div v-for="it, i in children" ref="itemsRef" :key="i" :style="getItemStyle(i as number)" style="position: absolute;">
+    <div
+      v-for="it, i in children"
+      ref="itemsRef"
+      :key="i"
+      :style="getItemStyle(i as number)"
+      style="position: absolute;"
+    >
       <component
-        :is="it" :style="{
+        :is="it"
+        :style="{
           width: `${itemWidth}px`,
         }"
       />
