@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useElementBounding } from '@vueuse/core'
+import { useElementSize } from '@vueuse/core'
 import type { MaybeRef, Ref } from 'vue'
-import { computed, ref, unref, useSlots, watch } from 'vue'
+import { computed, ref, unref, useSlots } from 'vue'
 
 const props = defineProps<{
   gap?: MaybeRef<number>
@@ -21,21 +21,16 @@ function isArray<T>(val: any): val is T[] {
 }
 
 const itemsRef = ref([])
-
 const boundings = computed(() => {
   const itemsVal = itemsRef.value
   return Array.from(itemsVal).map((item) => {
-    return useElementBounding(item)
+    return useElementSize(item)
   })
 })
 
-watch(boundings, () => { }) // Magic, to avoid warning
-
 const wrapperWidth = computed(() => itemWidth.value * rowCount.value + gap.value * (rowCount.value - 1) + paddingX.value * 2)
 
-const wrapperHeight = ref(0)
 function calculateWaterfallLayout(itemsRef: Ref<{ width: Ref<number>, height: Ref<number> }[]>, columnCount: MaybeRef<number>, gap: MaybeRef<number>, paddingX: MaybeRef<number>) {
-  wrapperHeight.value = 0
   const items = unref(itemsRef)
   const columnHeights = Array.from<number>({ length: unref(columnCount) }).fill(0) // 初始化列高度数组
   const itemPositions = [] // 存储每个项目的坐标
@@ -46,16 +41,41 @@ function calculateWaterfallLayout(itemsRef: Ref<{ width: Ref<number>, height: Re
     const columnIndex = columnHeights.indexOf(Math.min(...columnHeights)) // 找到最短的列
     const x = columnIndex * (itemWidth.value + unref(gap)) + unref(paddingX) + offset
     const y = columnHeights[columnIndex] // 计算 y 坐标
-    itemPositions.push({ x, y })
+    itemPositions.push({ x, y, width: item.width.value, height: item.height.value })
     // 更新列的高度
     columnHeights[columnIndex] += item.height.value + unref(gap)
-    wrapperHeight.value = Math.max(wrapperHeight.value, columnHeights[columnIndex])
   }
   return itemPositions
 }
 
 const layoutData = computed(() => {
   return calculateWaterfallLayout(boundings, rowCount, gap, paddingX)
+})
+
+const wrapperHeight = computed(() => {
+  if (!isArray(layoutData.value)) {
+    return 0
+  }
+  return Math.max(...layoutData.value.map(it => it.y + it.height))
+})
+
+const slots = useSlots()
+const allSlots = computed(() => {
+  return slots.default?.() ?? []
+})
+const childrenList = computed(() => {
+  const children: any = []
+  allSlots.value.forEach((slot) => {
+    if (isArray(slot.children)) {
+      slot.children.forEach((child) => {
+        children.push(child)
+      })
+    }
+    else {
+      children.push(slot)
+    }
+  })
+  return children
 })
 
 function getItemStyle(i: number) {
@@ -72,25 +92,6 @@ function getItemStyle(i: number) {
     maxWidth: `${itemWidth.value}px`,
   }
 }
-
-const slots = useSlots()
-const allSlots = computed(() => {
-  return slots.default?.() ?? []
-})
-const children = computed(() => {
-  const children: any = []
-  allSlots.value.forEach((slot) => {
-    if (isArray(slot.children)) {
-      slot.children.forEach((child) => {
-        children.push(child)
-      })
-    }
-    else {
-      children.push(slot)
-    }
-  })
-  return children
-})
 </script>
 
 <template>
@@ -104,7 +105,7 @@ const children = computed(() => {
     }"
   >
     <div
-      v-for="it, i in children"
+      v-for="it, i in childrenList"
       ref="itemsRef"
       :key="i"
       :style="getItemStyle(i as number)"

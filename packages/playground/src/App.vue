@@ -37,6 +37,7 @@ const items = computed(() => tmps.value.map(() => {
       :style="{
         display: 'inline-block',
         height: `100%`,
+        backgroundImage: `url(${item.src})`,
       }"
     >
   </Waterfall>
