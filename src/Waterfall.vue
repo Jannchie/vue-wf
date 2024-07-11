@@ -13,7 +13,6 @@ const props = defineProps<{
 const gap = computed(() => unref(props.gap) ?? 16)
 const rowCount = computed(() => unref(props.rowCount) ?? 3)
 const paddingX = computed(() => unref(props.paddingX) ?? 0)
-const itemWidth = computed(() => unref(props.itemWidth) ?? 500)
 const wrapper = ref<HTMLDivElement>()
 
 function isArray<T>(val: any): val is T[] {
@@ -28,7 +27,22 @@ const boundings = computed(() => {
   })
 })
 
-const wrapperWidth = computed(() => itemWidth.value * rowCount.value + gap.value * (rowCount.value - 1) + paddingX.value * 2)
+const wrapperWidth = computed(() => {
+  if (props.itemWidth) {
+    return unref(props.itemWidth) * rowCount.value + gap.value * (rowCount.value - 1) + paddingX.value * 2
+  }
+  if (props.wrapperWidth) {
+    return unref(props.wrapperWidth)
+  }
+  return wrapper.value?.parentElement?.clientWidth ?? 0
+})
+
+const itemWidth = computed(() => {
+  if (props.itemWidth) {
+    return unref(props.itemWidth)
+  }
+  return (wrapperWidth.value - paddingX.value * 2 - gap.value * (rowCount.value - 1)) / rowCount.value
+})
 
 function calculateWaterfallLayout(itemsRef: Ref<{ width: Ref<number>, height: Ref<number> }[]>, columnCount: MaybeRef<number>, gap: MaybeRef<number>, paddingX: MaybeRef<number>) {
   const items = unref(itemsRef)

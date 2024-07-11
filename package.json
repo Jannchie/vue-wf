@@ -25,18 +25,18 @@
     "vue": "^3.0.0"
   },
   "dependencies": {
-    "@vueuse/components": "^10.9.0",
-    "@vueuse/core": "^10.9.0"
+    "@vueuse/components": "^10.11.0",
+    "@vueuse/core": "^10.11.0"
   },
   "devDependencies": {
-    "@jannchie/eslint-config": "^3.2.0",
-    "@vitejs/plugin-vue": "^5.0.4",
-    "@vitejs/plugin-vue-jsx": "^3.1.0",
-    "eslint": "^9.2.0",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11",
+    "@jannchie/eslint-config": "^3.2.1",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "eslint": "^9.6.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3",
     "vite-plugin-dts": "^3.9.1",
-    "vue-tsc": "^2.0.17"
+    "vue-tsc": "^2.0.26"
   },
   "resolutions": {
     "vue": "^3.0.0"

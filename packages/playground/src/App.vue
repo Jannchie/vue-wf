@@ -25,9 +25,8 @@ const items = computed(() => tmps.value.map(() => {
 
 <template>
   <Waterfall
-    :wrapper-width="400"
-    :item-width="width"
     :gap="20"
+    :item-width="100"
   >
     <img
 
