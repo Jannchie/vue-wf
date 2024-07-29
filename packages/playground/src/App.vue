@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import Waterfall from 'vue-wf'
 
-const tmps = ref([0])
+const tmps = ref(Array.from({ length: 100 }))
 const heights = [50, 100, 200, 300, 400]
-const width = 100
-
-onMounted(() => {
-  tmps.value = Array.from({ length: 100 })
-  setTimeout(() => {
-    tmps.value = Array.from({ length: 10 })
-  }, 300)
-})
+const width = 500
 
 const items = computed(() => tmps.value.map(() => {
   const height = heights[Math.floor(Math.random() * heights.length)]
@@ -26,7 +19,7 @@ const items = computed(() => tmps.value.map(() => {
 <template>
   <Waterfall
     :gap="20"
-    :item-width="100"
+    :item-width="500"
   >
     <img
 

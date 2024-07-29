@@ -10,6 +10,7 @@ const props = defineProps<{
   rowCount?: MaybeRef<number>
   paddingX?: MaybeRef<number>
 }>()
+const slots = useSlots()
 const gap = computed(() => unref(props.gap) ?? 16)
 const rowCount = computed(() => unref(props.rowCount) ?? 3)
 const paddingX = computed(() => unref(props.paddingX) ?? 0)
@@ -73,7 +74,6 @@ const wrapperHeight = computed(() => {
   return Math.max(...layoutData.value.map(it => it.y + it.height))
 })
 
-const slots = useSlots()
 const allSlots = computed(() => {
   return slots.default?.() ?? []
 })
