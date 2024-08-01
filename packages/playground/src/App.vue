@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import Waterfall from 'vue-wf'
+import { computed, ref, watchEffect } from 'vue'
+import { VisualWaterfall, Waterfall } from 'vue-wf'
+import ScrollArea from './ScrollArea.vue'
 
 const tmps = ref(Array.from({ length: 100 }))
 const heights = [50, 100, 200, 300, 400]
-const width = 500
+const width = 200
+const visualWaterfall = ref<InstanceType<typeof VisualWaterfall>>()
 
 const items = computed(() => tmps.value.map(() => {
   const height = heights[Math.floor(Math.random() * heights.length)]
@@ -17,20 +19,43 @@ const items = computed(() => tmps.value.map(() => {
 </script>
 
 <template>
-  <Waterfall
-    :gap="20"
-    :item-width="500"
-  >
-    <img
+  <div>
+    <div style="height: 80vh">
+      <VisualWaterfall
+        :is="ScrollArea"
+        ref="visualWaterfall"
+        :gap="4"
+        :item-width="width"
+        :items="items"
+      >
+        <img
+          v-for="item, i in items"
+          :key="i"
+          :src="item.src"
+          :style="{
+            display: 'inline-block',
+            height: `100%`,
+            backgroundImage: `url(${item.src})`,
+          }"
+        >
+      </VisualWaterfall>
+    </div>
 
-      v-for="item, i in items"
-      :key="i"
-      :src="item.src"
-      :style="{
-        display: 'inline-block',
-        height: `100%`,
-        backgroundImage: `url(${item.src})`,
-      }"
+    <Waterfall
+      :gap="20"
+      :item-width="width"
+      style="height: 1000px;"
     >
-  </Waterfall>
+      <img
+        v-for="item, i in items"
+        :key="i"
+        :src="item.src"
+        :style="{
+          display: 'inline-block',
+          height: `100%`,
+          backgroundImage: `url(${item.src})`,
+        }"
+      >
+    </Waterfall>
+  </div>
 </template>
