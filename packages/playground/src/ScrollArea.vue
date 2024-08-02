@@ -55,7 +55,7 @@ const scrollDomRef = ref<HTMLElement | null>()
 const clientHeight = useClientHeight(() => scrollDomRef.value)
 const { x, y } = useScroll(() => scrollDomRef.value)
 const scrollableLength = computed(() => {
-  return scrollDomRef.value?.scrollHeight - scrollDomRef.value?.clientHeight
+  return (scrollDomRef.value?.scrollHeight ?? 0) - (clientHeight.value ?? 0)
 })
 const barProgress = computed(() => y.value / scrollableLength.value || 0)
 const scrollBarData = computed(() => {
@@ -75,7 +75,7 @@ const dragging = ref(false)
 const dragStartY = ref(0)
 const prevUserSelect = ref('')
 const startScrollTop = ref(0)
-const mouse = useMouse()
+const mouse = useMouse({ type: 'client' })
 useEventListener(() => scrollBarIndicatorRef.value, 'pointerdown', (e) => {
   dragging.value = true
   dragStartY.value = e.clientY
@@ -128,7 +128,7 @@ const hover = useElementHover(() => scrollBarIndicatorRef.value)
       }"
     >
       <div
-        v-show="scrollBarData.barHeight < scrollDomRef.clientHeight"
+        v-show="scrollBarData.barHeight < clientHeight"
         ref="scrollBarIndicatorRef"
         :style="{
           position: 'absolute',

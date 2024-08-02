@@ -1,5 +1,5 @@
 import Waterfall from './Waterfall.vue'
-import VisualWaterfall from './VisualWaterfall.vue'
+import LazyWaterfall from './LazyWaterfall.vue'
 
-export { Waterfall, VisualWaterfall }
+export { Waterfall, LazyWaterfall }
 export default Waterfall

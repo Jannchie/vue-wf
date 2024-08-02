@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
-import { VisualWaterfall, Waterfall } from 'vue-wf'
+import { computed, ref } from 'vue'
+import { LazyWaterfall, Waterfall } from 'vue-wf'
 import ScrollArea from './ScrollArea.vue'
 
 const tmps = ref(Array.from({ length: 100 }))
 const heights = [50, 100, 200, 300, 400]
 const width = 200
-const visualWaterfall = ref<InstanceType<typeof VisualWaterfall>>()
 
 const items = computed(() => tmps.value.map(() => {
   const height = heights[Math.floor(Math.random() * heights.length)]
@@ -21,9 +20,8 @@ const items = computed(() => tmps.value.map(() => {
 <template>
   <div>
     <div style="height: 80vh">
-      <VisualWaterfall
+      <LazyWaterfall
         :is="ScrollArea"
-        ref="visualWaterfall"
         :gap="4"
         :item-width="width"
         :items="items"
@@ -38,7 +36,7 @@ const items = computed(() => tmps.value.map(() => {
             backgroundImage: `url(${item.src})`,
           }"
         >
-      </VisualWaterfall>
+      </LazyWaterfall>
     </div>
 
     <Waterfall
