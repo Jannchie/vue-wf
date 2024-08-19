@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { LazyWaterfall, Waterfall } from 'vue-wf'
+import { VirtualWaterfall, Waterfall } from 'vue-wf'
 import ScrollArea from './ScrollArea.vue'
 
 const tmps = ref(Array.from({ length: 100 }))
@@ -20,7 +20,7 @@ const items = computed(() => tmps.value.map(() => {
 <template>
   <div>
     <div style="height: 80vh">
-      <LazyWaterfall
+      <VirtualWaterfall
         :is="ScrollArea"
         :gap="4"
         :item-width="width"
@@ -36,7 +36,7 @@ const items = computed(() => tmps.value.map(() => {
             backgroundImage: `url(${item.src})`,
           }"
         >
-      </LazyWaterfall>
+      </VirtualWaterfall>
     </div>
 
     <Waterfall
