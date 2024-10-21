@@ -9,8 +9,8 @@ const props = defineProps<{
   itemWidth?: MaybeRef<number>
   rowCount?: MaybeRef<number>
   paddingX?: MaybeRef<number>
+  is?: MaybeRef<any>
   items: MaybeRef<{ width: number, height: number }[]>
-  is: MaybeRef<any>
   rangeExpand?: MaybeRef<number>
 }>()
 const rangeExpand = computed(() => unref(props.rangeExpand) ?? 0)
