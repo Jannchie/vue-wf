@@ -1,4 +1,4 @@
-import Waterfall from './Waterfall.vue'
 import VirtualWaterfall from './VirtualWaterfall.vue'
+import Waterfall from './Waterfall.vue'
 
-export { Waterfall, VirtualWaterfall }
+export { VirtualWaterfall, Waterfall }

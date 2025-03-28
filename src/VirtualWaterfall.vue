@@ -1,74 +1,95 @@
 <script setup lang="ts">
-import { useScroll } from '@vueuse/core'
 import type { ComputedRef, MaybeRef } from 'vue'
-import { computed, ref, unref, useSlots } from 'vue'
+import { useElementBounding, useParentElement, useScroll } from '@vueuse/core'
+import { computed, ref, unref } from 'vue'
+import { useClientWidth } from './useClientWidth'
 
 const props = defineProps<{
   gap?: MaybeRef<number>
   wrapperWidth?: MaybeRef<number>
   itemWidth?: MaybeRef<number>
-  rowCount?: MaybeRef<number>
+  cols?: MaybeRef<number>
   paddingX?: MaybeRef<number>
-  is?: MaybeRef<any>
+  paddingY?: MaybeRef<number>
   items: MaybeRef<{ width: number, height: number }[]>
+  is?: MaybeRef<any>
+  yGap?: MaybeRef<number>
   rangeExpand?: MaybeRef<number>
+  scrollElement?: MaybeRef<HTMLElement | null>
+}>()
+const slots = defineSlots<{
+  default: (props?: any) => any
 }>()
 const rangeExpand = computed(() => unref(props.rangeExpand) ?? 0)
-const slots = useSlots()
 const gap = computed(() => unref(props.gap) ?? 16)
-const rowCount = computed(() => unref(props.rowCount) ?? 3)
 const paddingX = computed(() => unref(props.paddingX) ?? 0)
-const wrapper = ref<any>()
-const wrapperDom = computed<any>(() => {
-  if (wrapper.value && wrapper.value.$el) {
-    return wrapper.value.$el
-  }
-  return wrapper.value
+const paddingY = computed(() => unref(props.paddingY) ?? 0)
+const yGap = computed(() => unref(props.yGap) ?? 0)
+const wrapper = ref<HTMLElement | null>(null)
+const parent = useParentElement(wrapper)
+const scrollElement = computed(() => unref(props.scrollElement) ?? parent.value)
+const cols = computed(() => {
+  return unref(props.cols) ?? 3
 })
 
 function isArray<T>(val: any): val is T[] {
   return Array.isArray(val)
 }
 
-const wrapperWidth = computed(() => {
+const contentWidth = computed(() => {
   if (props.itemWidth) {
-    return unref(props.itemWidth) * rowCount.value + gap.value * (rowCount.value - 1) + paddingX.value * 2
+    return unref(props.itemWidth) * cols.value + gap.value * (cols.value - 1) + paddingX.value * 2
   }
   if (props.wrapperWidth) {
     return unref(props.wrapperWidth)
   }
-  return wrapperDom.value?.parentElement?.clientWidth ?? 0
+  return wrapper.value?.parentElement?.clientWidth ?? 0
 })
 
 const itemWidth = computed(() => {
   if (props.itemWidth) {
     return unref(props.itemWidth)
   }
-  return (wrapperWidth.value - paddingX.value * 2 - gap.value * (rowCount.value - 1)) / rowCount.value
+  return (contentWidth.value - paddingX.value * 2 - gap.value * (cols.value - 1)) / cols.value
 })
 
 const boundings = computed(() => {
   const itemsVal = unref(props.items)
   return itemsVal.map((d) => {
+    if (d.width === 0 || itemWidth.value === 0) {
+      return {
+        width: itemWidth.value,
+        height: itemWidth.value,
+      }
+    }
     const scale = itemWidth.value / d.width
+    const height = d.height * scale + yGap.value
     return {
       width: itemWidth.value,
-      height: d.height * scale,
+      height,
     }
   })
 })
 
+const clientWidth = useClientWidth(wrapper)
+const paddingInner = computed(() => {
+  return (clientWidth.value - contentWidth.value) / 2
+})
 function calculateWaterfallLayout(itemsRef: ComputedRef<{ width: number, height: number }[]>, columnCount: MaybeRef<number>, gap: MaybeRef<number>, paddingX: MaybeRef<number>) {
   const items = unref(itemsRef)
   const columnHeights = Array.from<number>({ length: unref(columnCount) }).fill(0) // 初始化列高度数组
-  const itemPositions = [] // 存储每个项目的坐标
-  const offset = Math.max(0, wrapperWidth.value - unref(paddingX) * 2 - itemWidth.value * items.length - unref(gap) * (items.length)) / 2
-
+  const itemPositions: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }[] = [] // 存储每个项目的坐标
+  const offset = Math.max(0, contentWidth.value - unref(paddingX) * 2 - itemWidth.value * items.length - unref(gap) * (items.length)) / 2
   for (let i = 0; i < items.length; i++) {
     const item = items[i]
     const columnIndex = columnHeights.indexOf(Math.min(...columnHeights)) // 找到最短的列
-    const x = columnIndex * (itemWidth.value + unref(gap)) + unref(paddingX) + offset
-    const y = columnHeights[columnIndex] // 计算 y 坐标
+    const x = columnIndex * (itemWidth.value + unref(gap)) + unref(paddingX) + offset + unref(paddingInner)
+    const y = columnHeights[columnIndex] + unref(paddingY)
     itemPositions.push({ x, y, width: item.width, height: item.height })
     // 更新列的高度
     columnHeights[columnIndex] += item.height + unref(gap)
@@ -77,14 +98,17 @@ function calculateWaterfallLayout(itemsRef: ComputedRef<{ width: number, height:
 }
 
 const layoutData = computed(() => {
-  return calculateWaterfallLayout(boundings, rowCount, gap, paddingX)
+  return calculateWaterfallLayout(boundings, cols, gap, paddingX)
 })
 
-const wrapperHeight = computed(() => {
+const contentHeight = computed(() => {
   if (!isArray(layoutData.value)) {
     return 0
   }
-  return Math.max(...layoutData.value.map(it => it.y + it.height))
+  if (layoutData.value.length === 0) {
+    return 0
+  }
+  return Math.max(...layoutData.value.map(it => it.y + it.height)) + paddingY.value * 2
 })
 
 const allSlots = computed(() => {
@@ -105,32 +129,43 @@ function getItemStyle(i: number) {
     maxWidth: `${itemWidth.value}px`,
   }
 }
-
 const _smooth = ref(false)
 const behavior = computed(() => _smooth.value ? 'smooth' : 'auto')
-const scroll = useScroll(wrapperDom, {
-  behavior,
+const scroll = useScroll(scrollElement, { behavior })
+
+const scrollBounds = useElementBounding(scrollElement)
+const scrollVal = useScroll(scrollElement)
+const wrapperBounds = useElementBounding(wrapper)
+const relativeCoords = computed(() => {
+  const relativeX = wrapperBounds.left.value - scrollBounds.left.value + scrollVal.x.value
+  const relativeY = wrapperBounds.top.value - scrollBounds.top.value + scrollVal.y.value
+  return {
+    x: relativeX,
+    y: relativeY,
+  }
 })
+
 const yRange = computed(() => {
-  return [
+  const yRange = [
     scroll.y.value - rangeExpand.value,
-    scroll.y.value + (wrapperDom.value?.clientHeight ?? 0) + rangeExpand.value,
+    scroll.y.value + scrollBounds.height.value + rangeExpand.value,
   ]
+  return yRange
 })
 
 const inRange = computed(() => {
   return layoutData.value.map((it) => {
-    const top = it.y
-    const bottom = it.y + it.height
-    return top >= yRange.value[0] && top <= yRange.value[1] || bottom >= yRange.value[0] && bottom <= yRange.value[1] || top <= yRange.value[0] && bottom >= yRange.value[1]
+    const top = it.y + relativeCoords.value.y
+    const bottom = it.y + it.height + relativeCoords.value.y
+    return (top >= yRange.value[0] && top <= yRange.value[1]) || (bottom >= yRange.value[0] && bottom <= yRange.value[1]) || (top <= yRange.value[0] && bottom >= yRange.value[1])
   })
 })
 
 const childrenList = computed(() => {
   const children: any = []
-  allSlots.value.forEach((slot, i) => {
+  allSlots.value.forEach((slot: any, i: number) => {
     if (isArray(slot.children)) {
-      slot.children.forEach((child, i) => {
+      slot.children.forEach((child: any, i: number) => {
         if (!inRange.value[i]) {
           return
         }
@@ -146,6 +181,7 @@ const childrenList = computed(() => {
   })
   return children
 })
+const contentDom = ref<HTMLElement>()
 defineExpose({
   scroll,
   scrollTo: (top: number, smooth = false) => {
@@ -154,29 +190,33 @@ defineExpose({
     scroll.y.value = top
     _smooth.value = prev
   },
+  wrapper,
+  contentDom,
+  layoutData,
 })
-const wrapperIs = computed(() => props.is ?? 'div')
 </script>
 
 <template>
-  <component
-    :is="wrapperIs"
+  <div
     ref="wrapper"
+    class="vue-wf-waterfall"
     :style="{
       position: 'relative',
     }"
   >
     <div
+      ref="contentDom"
+      class="vue-wf-waterfall-content"
       :style="{
-        height: `${wrapperHeight}px`,
-        width: `${wrapperWidth}px`,
-        margin: '0 auto',
+        width: `${contentWidth}px`,
+        height: `${contentHeight}px`,
+        minHeight: '100%',
         position: 'relative',
       }"
     >
       <div
         v-for="[it, i] in childrenList"
-        :key="it"
+        :key="i"
         :style="getItemStyle(i as number)"
         style="position: absolute;"
       >
@@ -188,5 +228,5 @@ const wrapperIs = computed(() => props.is ?? 'div')
         />
       </div>
     </div>
-  </component>
+  </div>
 </template>

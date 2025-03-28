@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useElementSize } from '@vueuse/core'
 import type { MaybeRef, Ref } from 'vue'
+import { useElementSize } from '@vueuse/core'
 import { computed, ref, unref, useSlots } from 'vue'
 
 const props = defineProps<{
