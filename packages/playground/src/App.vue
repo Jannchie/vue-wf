@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { VirtualWaterfall } from 'vue-wf'
+import { Waterfall } from 'vue-wf'
 
 const tmps = ref(Array.from({ length: 100 }))
 const heights = [50, 100, 200, 300, 400]
@@ -23,11 +23,10 @@ const wrapper = ref()
     style="display: flex; gap: 20px;  overflow:auto"
   >
     <div style="height: 80vh">
-      <VirtualWaterfall
+      <Waterfall
         :scroll-element="wrapper"
         :gap="4"
         :item-width="width"
-        :items="items"
       >
         <img
           v-for="item, i in items"
@@ -39,7 +38,7 @@ const wrapper = ref()
             backgroundImage: `url(${item.src})`,
           }"
         >
-      </VirtualWaterfall>
+      </Waterfall>
     </div>
   </div>
 </template>
