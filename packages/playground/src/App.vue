@@ -14,31 +14,28 @@ const items = computed(() => tmps.value.map(() => {
     src: `https://picsum.photos/${width}/${height}?random=${Math.random()}`,
   }
 }))
-const wrapper = ref()
 </script>
 
 <template>
   <div
-    ref="wrapper"
-    style="display: flex; gap: 20px;  overflow:auto"
+    style="height: 80vh; width:100dvw; overflow: auto"
   >
-    <div style="height: 80vh">
-      <Waterfall
-        :scroll-element="wrapper"
-        :gap="4"
-        :item-width="width"
+    <Waterfall
+      :scroll-element="wrapper"
+      :gap="4"
+      :item-width="width"
+      :items="items"
+    >
+      <img
+        v-for="item, i in items"
+        :key="i"
+        :src="item.src"
+        :style="{
+          display: 'inline-block',
+          height: `100%`,
+          backgroundImage: `url(${item.src})`,
+        }"
       >
-        <img
-          v-for="item, i in items"
-          :key="i"
-          :src="item.src"
-          :style="{
-            display: 'inline-block',
-            height: `100%`,
-            backgroundImage: `url(${item.src})`,
-          }"
-        >
-      </Waterfall>
-    </div>
+    </Waterfall>
   </div>
 </template>

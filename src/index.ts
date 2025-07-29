@@ -1,3 +1,1 @@
-import Waterfall from './Waterfall.vue'
-
-export { Waterfall }
+export { default as Waterfall } from './Waterfall.vue'
