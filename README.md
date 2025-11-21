@@ -3,7 +3,7 @@
 [![CodeTime badge](https://img.shields.io/endpoint?style=social&url=https%3A%2F%2Fapi.codetime.dev%2Fshield%3Fid%3D2%26project%3Dvue-wf%26in%3D0)](https://codetime.dev)
 
 <p align="center" style="overflow: hidden; border-radius:">
-  <img src="docs/example.png" alt="Example">
+  <img src="packages/docs/public/example.png" alt="Example">
 </p>
 
 ## Install
@@ -59,10 +59,16 @@ const items = tmps.map(() => {
 - Set the outer container to a fixed height with `overflow: auto` (e.g., `height: 100vh; overflow: auto;`). This allows the component to measure the viewport and only render items inside (plus the `rangeExpand` buffer).
 - If `rangeExpand` is set to `0`, only the items currently in view are rendered. Increase it to preload items above/below the viewport for smoother scrolling.
 
+## Packages
+
+- `packages/vue-wf`: core library source and build artifacts.
+- `packages/docs`: VitePress documentation site.
+- `packages/playground`: interactive playground project.
+
 ## Development
 
 ```bash
 pnpm install
-pnpm -r build
+pnpm build
 pnpm dev:all
 ```

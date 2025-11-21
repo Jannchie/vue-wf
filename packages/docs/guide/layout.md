@@ -52,8 +52,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div ref="wrapperRef" style="height: 80vh; overflow: auto;">
-    <Waterfall :wrapper-width="wrapperWidth" :item-width="200" :items="items" />
+  <div
+    ref="wrapperRef"
+    style="height: 80vh; overflow: auto;"
+  >
+    <Waterfall
+      :wrapper-width="wrapperWidth"
+      :item-width="200"
+      :items="items"
+    />
   </div>
 </template>
 ```

@@ -15,7 +15,11 @@ Apply a fixed height and `overflow: auto` on the **parent** scroll container. By
       :gap="16"
       :range-expand="200"
     >
-      <Card v-for="item, index in items" :key="index" :item="item" />
+      <Card
+        v-for="item, index in items"
+        :key="index"
+        :item="item"
+      />
     </Waterfall>
   </div>
 </template>
@@ -47,7 +51,17 @@ function scrollToTop() {
 </script>
 
 <template>
-  <Waterfall ref="waterfallRef" :items="items" :item-width="200" :gap="12" />
-  <button type="button" @click="scrollToTop">Back to top</button>
+  <Waterfall
+    ref="waterfallRef"
+    :items="items"
+    :item-width="200"
+    :gap="12"
+  />
+  <button
+    type="button"
+    @click="scrollToTop"
+  >
+    Back to top
+  </button>
 </template>
 ```

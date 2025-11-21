@@ -50,7 +50,11 @@ const items = tmps.map(() => {
 </script>
 
 <template>
-  <Waterfall :wrapper-width="400" :item-width="width" :gap="20">
+  <Waterfall
+    :wrapper-width="400"
+    :item-width="width"
+    :gap="20"
+  >
     <div
       v-for="item, i in items"
       :key="i"

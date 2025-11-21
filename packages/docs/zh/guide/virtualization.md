@@ -15,7 +15,11 @@ Vue WF 仅渲染可视区域附近的卡片，以保持长列表的滚动性能�
       :gap="16"
       :range-expand="200"
     >
-      <Card v-for="item, index in items" :key="index" :item="item" />
+      <Card
+        v-for="item, index in items"
+        :key="index"
+        :item="item"
+      />
     </Waterfall>
   </div>
 </template>
@@ -47,7 +51,17 @@ function scrollToTop() {
 </script>
 
 <template>
-  <Waterfall ref="waterfallRef" :items="items" :item-width="200" :gap="12" />
-  <button type="button" @click="scrollToTop">返回顶部</button>
+  <Waterfall
+    ref="waterfallRef"
+    :items="items"
+    :item-width="200"
+    :gap="12"
+  />
+  <button
+    type="button"
+    @click="scrollToTop"
+  >
+    返回顶部
+  </button>
 </template>
 ```

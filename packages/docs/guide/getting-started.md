@@ -25,7 +25,11 @@ const items = [
 </script>
 
 <template>
-  <Waterfall :wrapper-width="480" :item-width="baseWidth" :gap="12">
+  <Waterfall
+    :wrapper-width="480"
+    :item-width="baseWidth"
+    :gap="12"
+  >
     <div
       v-for="item, index in items"
       :key="index"
