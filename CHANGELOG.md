@@ -1,3 +1,12 @@
+## v0.7.0
+
+[v0.6.0...v0.7.0](https://github.com/jannchie/vue-wf/compare/v0.6.0...v0.7.0)
+
+### :sparkles: Features
+
+- **docs**: add vitepress documentation site - By [Jannchie](mailto:jannchie@gmail.com) in [52643dd](https://github.com/jannchie/vue-wf/commit/52643dd)
+- **waterfall**: add item-padding prop, virtual demo controls, and normalize items - By [Jannchie](mailto:jannchie@gmail.com) in [6590353](https://github.com/jannchie/vue-wf/commit/6590353)
+
 ## v0.6.0
 
 [v0.5.0...v0.6.0](https://github.com/jannchie/vue-wf/compare/v0.5.0...v0.6.0)
