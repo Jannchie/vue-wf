@@ -49,6 +49,16 @@ const items = tmps.map(() => {
 </template>
 ```
 
+### Props
+
+- `item-padding`: extra space around each item (useful for captions or badges). Accepts a number for both axes or an object `{ x, y }`. The legacy `y-gap` prop now maps to `item-padding.y`.
+- `items`: array of `{ width, height }` objects. Both fields are required numbers and are validated at runtime.
+
+### Virtual rendering tips
+
+- Set the outer container to a fixed height with `overflow: auto` (e.g., `height: 100vh; overflow: auto;`). This allows the component to measure the viewport and only render items inside (plus the `rangeExpand` buffer).
+- If `rangeExpand` is set to `0`, only the items currently in view are rendered. Increase it to preload items above/below the viewport for smoother scrolling.
+
 ## Development
 
 ```bash
