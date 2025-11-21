@@ -18,6 +18,9 @@
     "preview": "vite preview",
     "build-demo": "cd demo && vite build",
     "preview-demo": "cd demo && vite preview",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
@@ -36,6 +39,7 @@
     "typescript": "^5.8.3",
     "vite": "^7.0.6",
     "vite-plugin-dts": "4.5.4",
+    "vitepress": "^1.6.4",
     "vue-tsc": "^3.0.4"
   },
   "resolutions": {
