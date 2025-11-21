@@ -76,9 +76,9 @@ const dragStartY = ref(0)
 const prevUserSelect = ref('')
 const startScrollTop = ref(0)
 const mouse = useMouse({ type: 'client' })
-useEventListener(() => scrollBarIndicatorRef.value, 'pointerdown', (e) => {
+useEventListener(() => scrollBarIndicatorRef.value, 'pointerdown', (event: PointerEvent) => {
   dragging.value = true
-  dragStartY.value = e.clientY
+  dragStartY.value = event.clientY
   startScrollTop.value = y.value
   prevUserSelect.value = document.body.style.userSelect
   document.body.style.userSelect = 'none'
