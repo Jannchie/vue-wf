@@ -19,13 +19,5 @@
     "@jannchie/eslint-config": "^3.7.1",
     "eslint": "^9.39.1",
     "typescript": "^5.9.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "vue": "^3.0.0"
-    }
-  },
-  "resolutions": {
-    "vue": "^3.0.0"
   }
 }
