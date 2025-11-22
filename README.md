@@ -6,6 +6,11 @@
   <img src="packages/docs/public/example.png" alt="Example">
 </p>
 
+## Sites
+
+- Documentation: https://vue-wf.jannchie.com
+- Playground demo: https://vue-wf.playground.jannchie.com
+
 ## Install
 
 ```bash

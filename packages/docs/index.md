@@ -30,6 +30,11 @@ features:
 
 Vue WF focuses on rendering efficiency for media-heavy grids. It pairs a simple prop-driven API with virtualization so you can keep interaction snappy even when streaming hundreds of photos or cards.
 
+## Hosted links
+
+- Documentation: https://vue-wf.jannchie.com
+- Playground demo: https://vue-wf.playground.jannchie.com
+
 ## Quick sample
 
 ```vue

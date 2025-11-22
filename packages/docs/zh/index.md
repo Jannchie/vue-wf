@@ -30,6 +30,11 @@ features:
 
 Vue WF 聚焦于媒体密集场景的性能与可用性。通过简单的属性驱动 API 与虚拟化渲染，你可以在滚动数百甚至上千张图片时保持顺滑交互。
 
+## 在线地址
+
+- 文档站点：https://vue-wf.jannchie.com
+- 演示 Playground：https://vue-wf.playground.jannchie.com
+
 ## 快速示例
 
 ```vue
