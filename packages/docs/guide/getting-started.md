@@ -44,7 +44,8 @@ const items = [
 
 ## Core props
 
-- `items`: an array of `{ width: number; height: number }` pairs used to compute column layout. Even if you render custom children, supplying dimensions keeps the virtualizer accurate.
+- `items`: an array of `{ width: number; height?: number }` pairs used to compute column layout. Heights can be omitted when `layout="square"` because the component locks height to the tile width.
+- `layout`: choose `'waterfall'` (default) for masonry flow or `'square'` to render uniform squares with height equal to width.
 - `wrapper-width`: the pixel width of the scrollable container. Use `ResizeObserver` or a ref to keep this in sync on responsive layouts.
 - `item-width`: the base width of each tile. Columns are derived from `wrapper-width / item-width`.
 - `gap`: spacing between tiles, applied to both axes.

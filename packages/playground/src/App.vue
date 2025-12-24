@@ -2,6 +2,8 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { Waterfall } from 'vue-wf'
 
+type LayoutMode = 'waterfall' | 'square'
+
 interface ControlState {
   cols: number
   gap: number
@@ -26,6 +28,7 @@ const placeholders = ref(Array.from({ length: 100 }))
 const ratios = [0.65, 0.8, 0.95, 1.05, 1.2, 1.35, 1.5]
 const heights = ratios.map(ratio => ratio * baseWidth)
 const loadedSet = ref<Set<number>>(new Set([0]))
+const layoutMode = ref<LayoutMode>('waterfall')
 
 const controls = reactive<ControlState>({
   cols: 4,
@@ -46,6 +49,7 @@ interface RangeField {
   unit?: string
 }
 
+const layoutModes: LayoutMode[] = ['waterfall', 'square']
 const numberFields: RangeField[] = [
   { key: 'cols', label: 'Columns', min: 1, max: 12, step: 1 },
   { key: 'gap', label: 'Gap', min: 0, max: 72, step: 2, unit: 'px' },
@@ -93,6 +97,10 @@ function markLoaded(index: number) {
 watch(items, () => {
   loadedSet.value = new Set([0])
 })
+
+function setLayoutMode(mode: LayoutMode) {
+  layoutMode.value = mode
+}
 </script>
 
 <template>
@@ -107,6 +115,28 @@ watch(items, () => {
           <p class="hint">
             Adjust props in real time to see how the layout adapts.
           </p>
+        </div>
+        <div class="layout-row">
+          <div class="layout-label">
+            <span class="layout-title">
+              Layout mode
+            </span>
+            <span class="layout-desc">
+              Switch between masonry and square tiles.
+            </span>
+          </div>
+          <div class="layout-switch">
+            <button
+              v-for="mode in layoutModes"
+              :key="mode"
+              type="button"
+              class="toggle"
+              :class="{ active: layoutMode === mode }"
+              @click="setLayoutMode(mode)"
+            >
+              {{ mode === 'waterfall' ? 'Waterfall' : 'Square' }}
+            </button>
+          </div>
         </div>
         <div class="control-grid">
           <label
@@ -152,6 +182,7 @@ watch(items, () => {
       :padding-y="controls.paddingY"
       :item-padding="itemPadding"
       :range-expand="controls.rangeExpand"
+      :layout="layoutMode"
     >
       <div
         v-for="item, i in items"
@@ -263,6 +294,58 @@ watch(items, () => {
   color: #555;
   font-size: 13px;
   line-height: 1.4;
+}
+
+.layout-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.layout-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.layout-title {
+  font-size: 14px;
+  color: #222;
+}
+
+.layout-desc {
+  font-size: 12px;
+  color: #666;
+}
+
+.layout-switch {
+  display: flex;
+  gap: 8px;
+}
+
+.toggle {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #d0d0d0;
+  background: #ffffff;
+  color: #222;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+.toggle:hover {
+  border-color: #b5b5b5;
+}
+
+.toggle.active {
+  border-color: #1a73e8;
+  background: #e8f0fe;
+  color: #0b57d0;
 }
 
 .hero-shell {

@@ -19,6 +19,20 @@ Understand how Vue WF decides widths, columns, and padding so tiles line up acro
 - `item-padding`: per-tile padding. Accepts a number (both axes) or `{ x, y }`.
 - `paddingX` / `paddingY`: outer padding for the whole grid.
 
+## Layout modes
+
+- `layout="waterfall"` (default): masonry flow that sizes height from `items` widths and heights.
+- `layout="square"`: forces each tile’s height to match its width; `items` may omit `height` in this mode.
+
+```vue
+<Waterfall
+  :items="items"
+  :item-width="200"
+  :gap="12"
+  layout="square"
+/>
+```
+
 ## Recommended setups
 
 - Responsive container: feed parent width into `wrapper-width` (e.g., via `ResizeObserver`), set the desired `cols`, and omit `item-width` so tiles auto-fit those columns.

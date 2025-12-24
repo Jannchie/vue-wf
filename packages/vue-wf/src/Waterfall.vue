@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { ComputedRef, MaybeRef } from 'vue'
 import { useElementBounding, useParentElement, useScroll } from '@vueuse/core'
-import { computed, Fragment, ref, unref, useAttrs } from 'vue'
+import { cloneVNode, computed, Fragment, ref, unref, useAttrs } from 'vue'
 import { useClientWidth } from './useClientWidth'
 
 type ItemPadding = number | {
   x?: number
   y?: number
 }
+type LayoutMode = 'waterfall' | 'square'
 
 const props = defineProps<{
   gap?: MaybeRef<number>
@@ -16,7 +17,7 @@ const props = defineProps<{
   cols?: MaybeRef<number>
   paddingX?: MaybeRef<number>
   paddingY?: MaybeRef<number>
-  items: MaybeRef<{ width: number, height: number }[]>
+  items: MaybeRef<{ width: number, height?: number }[]>
   is?: MaybeRef<any>
   itemPadding?: MaybeRef<ItemPadding>
   /**
@@ -25,6 +26,7 @@ const props = defineProps<{
   yGap?: MaybeRef<number>
   rangeExpand?: MaybeRef<number>
   scrollElement?: MaybeRef<HTMLElement>
+  layout?: MaybeRef<LayoutMode>
 }>()
 const slots = defineSlots<{
   default: (properties_?: any) => any
@@ -54,6 +56,13 @@ const itemPadding = computed(() => {
     x: resolved?.x ?? 0,
     y: resolved?.y ?? legacyYGap,
   }
+})
+const layoutMode = computed<LayoutMode>(() => {
+  const mode = unref(props.layout)
+  if (mode === 'square') {
+    return mode
+  }
+  return 'waterfall'
 })
 
 function isArray<T>(value: any): value is T[] {
@@ -98,13 +107,25 @@ const normalizedItems = computed(() => {
   }
   return rawItems.map((item, index) => {
     const width = Number((item as Record<string, any>)?.width)
-    const height = Number((item as Record<string, any>)?.height)
-    if (!Number.isFinite(width) || !Number.isFinite(height)) {
-      console.warn(`[Waterfall] items[${index}] is missing a numeric width or height.`, item)
+    const heightValue = Number((item as Record<string, any>)?.height)
+    const hasWidth = Number.isFinite(width)
+    const hasHeight = Number.isFinite(heightValue)
+    if (!hasWidth) {
+      console.warn(`[Waterfall] items[${index}] is missing a numeric width.`, item)
+    }
+    if (!hasHeight && layoutMode.value === 'waterfall') {
+      console.warn(`[Waterfall] items[${index}] is missing a numeric height.`, item)
+    }
+    let resolvedHeight = 0
+    if (hasHeight) {
+      resolvedHeight = heightValue
+    }
+    else if (layoutMode.value === 'square' && hasWidth) {
+      resolvedHeight = width
     }
     return {
-      width: Number.isFinite(width) ? width : 0,
-      height: Number.isFinite(height) ? height : 0,
+      width: hasWidth ? width : 0,
+      height: resolvedHeight,
     }
   })
 })
@@ -119,6 +140,13 @@ const layoutItemWidth = computed(() => itemWidth.value + itemPadding.value.x)
 
 const boundings = computed(() => {
   const itemsValue = normalizedItems.value
+  if (layoutMode.value === 'square') {
+    const height = itemWidth.value + itemPadding.value.y
+    return itemsValue.map(() => ({
+      width: layoutItemWidth.value,
+      height,
+    }))
+  }
   return itemsValue.map((d) => {
     if (d.width === 0 || itemWidth.value === 0) {
       return {
@@ -218,6 +246,16 @@ const allSlots = computed(() => {
   return slots.default?.() ?? []
 })
 
+const itemContentStyle = computed(() => {
+  const style: Record<string, string> = {
+    width: `${itemWidth.value}px`,
+  }
+  if (layoutMode.value === 'square') {
+    style.height = `${itemWidth.value}px`
+  }
+  return style
+})
+
 function getItemStyle(index: number) {
   if (!isArray(layoutData.value)) {
     return {}
@@ -271,7 +309,7 @@ const childrenList = computed(() => {
     if (!inRange.value[index]) {
       continue
     }
-    children.push([element, index])
+    children.push([cloneVNode(element), index])
   }
   return children
 })
@@ -316,9 +354,7 @@ defineExpose({
       >
         <component
           :is="it"
-          :style="{
-            width: `${itemWidth}px`,
-          }"
+          :style="itemContentStyle"
         />
       </div>
     </div>
