@@ -1,3 +1,30 @@
+## v0.8.0
+
+[v0.7.0...v0.8.0](https://github.com/jannchie/vue-wf/compare/v0.7.0...v0.8.0)
+
+### :sparkles: Features
+
+- **layout**: add square layout mode and docs/playground support - By [Jannchie](mailto:jannchie@gmail.com) in [fc8d5a2](https://github.com/jannchie/vue-wf/commit/fc8d5a2)
+
+### :adhesive_bandage: Fixes
+
+- **build-config**: quote pnpm filter patterns && add @vueuse/core to playground - By [Jannchie](mailto:jannchie@gmail.com) in [f6f0da0](https://github.com/jannchie/vue-wf/commit/f6f0da0)
+- **vue-wf**: handle window/document scroll targets correctly - By [Jannchie](mailto:jannchie@gmail.com) in [6b98cb1](https://github.com/jannchie/vue-wf/commit/6b98cb1)
+
+### :art: Refactors
+
+- move to monorepo layout && update configs - By [Jannchie](mailto:jannchie@gmail.com) in [b3ed860](https://github.com/jannchie/vue-wf/commit/b3ed860)
+
+### :memo: Documentation
+
+- **docs**: add hosted documentation and playground links - By [Jannchie](mailto:jannchie@gmail.com) in [3671ea6](https://github.com/jannchie/vue-wf/commit/3671ea6)
+- **readme**: add alt attribute to image - By [Jannchie](mailto:jannchie@gmail.com) in [2a1952b](https://github.com/jannchie/vue-wf/commit/2a1952b)
+
+### :wrench: Chores
+
+- **deps**: remove pnpm overrides and update lockfile vue resolutions - By [Jannchie](mailto:jannchie@gmail.com) in [d731079](https://github.com/jannchie/vue-wf/commit/d731079)
+- **deps**: update lockfile for minor dependency bumps - By [Jannchie](mailto:jannchie@gmail.com) in [7781b34](https://github.com/jannchie/vue-wf/commit/7781b34)
+
 ## v0.7.0
 
 [v0.6.0...v0.7.0](https://github.com/jannchie/vue-wf/compare/v0.6.0...v0.7.0)

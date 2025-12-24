@@ -1,7 +1,7 @@
 {
   "name": "vue-wf-workspace",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "dev": "pnpm -C packages/vue-wf dev",
