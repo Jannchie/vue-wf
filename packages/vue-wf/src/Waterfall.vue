@@ -40,7 +40,7 @@ const parent = useParentElement(wrapper)
 const scrollElement = computed(() => unref(props.scrollElement) ?? parent.value ?? null)
 const scrollElementForBounds = computed<HTMLElement | null>(() => {
   const target = unref(scrollElement)
-  if (target instanceof HTMLElement) {
+  if (typeof HTMLElement !== 'undefined' && target instanceof HTMLElement) {
     return target
   }
   if (typeof document !== 'undefined') {
