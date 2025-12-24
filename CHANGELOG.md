@@ -1,5 +1,9 @@
 ## v0.8.1
 
+[v0.8.1...v0.8.1](https://github.com/jannchie/vue-wf/compare/v0.8.1...v0.8.1)
+
+## v0.8.1
+
 [v0.8.0...v0.8.1](https://github.com/jannchie/vue-wf/compare/v0.8.0...v0.8.1)
 
 ### :adhesive_bandage: Fixes

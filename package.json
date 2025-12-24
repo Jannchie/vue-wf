@@ -16,8 +16,8 @@
     "lint:fix": "eslint packages --fix"
   },
   "devDependencies": {
-    "@jannchie/eslint-config": "^3.7.1",
-    "eslint": "^9.39.1",
+    "@jannchie/eslint-config": "^3.7.5",
+    "eslint": "^9.39.2",
     "typescript": "^5.9.3"
   }
 }
