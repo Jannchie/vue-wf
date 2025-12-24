@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ComputedRef, MaybeRef } from 'vue'
-import { useElementBounding, useParentElement, useScroll } from '@vueuse/core'
+import { useElementBounding, useParentElement, useScroll, useWindowSize } from '@vueuse/core'
 import { cloneVNode, computed, Fragment, ref, unref, useAttrs } from 'vue'
 import { useClientWidth } from './useClientWidth'
 
@@ -25,7 +25,7 @@ const props = defineProps<{
    */
   yGap?: MaybeRef<number>
   rangeExpand?: MaybeRef<number>
-  scrollElement?: MaybeRef<HTMLElement>
+  scrollElement?: MaybeRef<HTMLElement | Window | Document | null>
   layout?: MaybeRef<LayoutMode>
 }>()
 const slots = defineSlots<{
@@ -37,7 +37,17 @@ const paddingX = computed(() => unref(props.paddingX) ?? 0)
 const paddingY = computed(() => unref(props.paddingY) ?? 0)
 const wrapper = ref<HTMLElement | null>(null)
 const parent = useParentElement(wrapper)
-const scrollElement = computed(() => unref(props.scrollElement) ?? parent.value)
+const scrollElement = computed(() => unref(props.scrollElement) ?? parent.value ?? null)
+const scrollElementForBounds = computed<HTMLElement | null>(() => {
+  const target = unref(scrollElement)
+  if (target instanceof HTMLElement) {
+    return target
+  }
+  if (typeof document !== 'undefined') {
+    return document.documentElement
+  }
+  return null
+})
 const clientWidth = useClientWidth(wrapper)
 const attrs = useAttrs()
 const cols = computed(() => {
@@ -275,11 +285,36 @@ const _smooth = ref(false)
 const behavior = computed(() => _smooth.value ? 'smooth' : 'auto')
 const scroll = useScroll(scrollElement, { behavior })
 
-const scrollBounds = useElementBounding(scrollElement)
+const scrollBounds = useElementBounding(scrollElementForBounds)
+const windowSize = useWindowSize()
+const isViewportScroll = computed(() => {
+  const target = unref(scrollElement)
+  if (!target) {
+    return false
+  }
+  if (globalThis.window !== undefined && target === globalThis.window) {
+    return true
+  }
+  if (typeof document !== 'undefined' && target === document) {
+    return true
+  }
+  if (typeof document !== 'undefined' && target === document.documentElement) {
+    return true
+  }
+  if (typeof document !== 'undefined' && target === document.body) {
+    return true
+  }
+  return false
+})
+const scrollBoundsLeft = computed(() => (isViewportScroll.value ? 0 : scrollBounds.left.value))
+const scrollBoundsTop = computed(() => (isViewportScroll.value ? 0 : scrollBounds.top.value))
+const scrollBoundsHeight = computed(() => (
+  isViewportScroll.value ? windowSize.height.value : scrollBounds.height.value
+))
 const wrapperBounds = useElementBounding(wrapper)
 const relativeCoords = computed(() => {
-  const relativeX = wrapperBounds.left.value - scrollBounds.left.value + scroll.x.value
-  const relativeY = wrapperBounds.top.value - scrollBounds.top.value + scroll.y.value
+  const relativeX = wrapperBounds.left.value - scrollBoundsLeft.value + scroll.x.value
+  const relativeY = wrapperBounds.top.value - scrollBoundsTop.value + scroll.y.value
   return {
     x: relativeX,
     y: relativeY,
@@ -289,7 +324,7 @@ const relativeCoords = computed(() => {
 const yRange = computed(() => {
   const yRange = [
     scroll.y.value - rangeExpand.value,
-    scroll.y.value + scrollBounds.height.value + rangeExpand.value,
+    scroll.y.value + scrollBoundsHeight.value + rangeExpand.value,
   ]
   return yRange
 })
