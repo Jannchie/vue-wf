@@ -1,3 +1,11 @@
+## v0.8.1
+
+[v0.8.0...v0.8.1](https://github.com/jannchie/vue-wf/compare/v0.8.0...v0.8.1)
+
+### :adhesive_bandage: Fixes
+
+- **vue-wf**: guard HTMLElement reference for SSR - By [Jannchie](mailto:jannchie@gmail.com) in [b3ab073](https://github.com/jannchie/vue-wf/commit/b3ab073)
+
 ## v0.8.0
 
 [v0.7.0...v0.8.0](https://github.com/jannchie/vue-wf/compare/v0.7.0...v0.8.0)
