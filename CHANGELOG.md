@@ -1,3 +1,11 @@
+## v0.8.2
+
+[v0.8.1...v0.8.2](https://github.com/jannchie/vue-wf/compare/v0.8.1...v0.8.2)
+
+### :adhesive_bandage: Fixes
+
+- **vue-wf**: fix layout bounds calculation - By [Jannchie](mailto:jannchie@gmail.com) in [8619311](https://github.com/jannchie/vue-wf/commit/8619311)
+
 ## v0.8.1
 
 [v0.8.1...v0.8.1](https://github.com/jannchie/vue-wf/compare/v0.8.1...v0.8.1)
