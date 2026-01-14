@@ -189,7 +189,7 @@ const resolvedWrapperWidth = computed(() => {
   if (props.itemWidth && props.cols) {
     return contentWidth.value
   }
-  return 400
+  return 0
 })
 const externalStyle = computed(() => {
   const style = (attrs as Record<string, any>).style
@@ -308,9 +308,17 @@ const isViewportScroll = computed(() => {
 })
 const scrollBoundsLeft = computed(() => (isViewportScroll.value ? 0 : scrollBounds.left.value))
 const scrollBoundsTop = computed(() => (isViewportScroll.value ? 0 : scrollBounds.top.value))
-const scrollBoundsHeight = computed(() => (
-  isViewportScroll.value ? windowSize.height.value : scrollBounds.height.value
-))
+const scrollBoundsHeight = computed(() => {
+  if (!isViewportScroll.value) {
+    return scrollBounds.height.value
+  }
+  const windowHeight = windowSize.height.value
+  if (typeof document === 'undefined') {
+    return windowHeight
+  }
+  const rootHeight = document.documentElement?.clientHeight ?? 0
+  return Math.max(windowHeight, rootHeight, scrollBounds.height.value)
+})
 const wrapperBounds = useElementBounding(wrapper)
 const relativeCoords = computed(() => {
   const relativeX = wrapperBounds.left.value - scrollBoundsLeft.value + scroll.x.value
