@@ -13,7 +13,8 @@
     "docs:build": "pnpm -C packages/docs build",
     "docs:preview": "pnpm -C packages/docs preview",
     "lint": "eslint packages",
-    "lint:fix": "eslint packages --fix"
+    "lint:fix": "eslint packages --fix",
+    "release": "pnpm -F vue-wf publish"
   },
   "devDependencies": {
     "@jannchie/eslint-config": "^3.7.5",
