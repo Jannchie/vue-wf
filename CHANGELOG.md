@@ -1,5 +1,13 @@
 ## v0.8.2
 
+[v0.8.2...v0.8.2](https://github.com/jannchie/vue-wf/compare/v0.8.2...v0.8.2)
+
+### :wrench: Chores
+
+- **scripts**: add release script for vue-wf package - By [Jannchie](mailto:jannchie@gmail.com) in [77c085b](https://github.com/jannchie/vue-wf/commit/77c085b)
+
+## v0.8.2
+
 [v0.8.1...v0.8.2](https://github.com/jannchie/vue-wf/compare/v0.8.1...v0.8.2)
 
 ### :adhesive_bandage: Fixes
